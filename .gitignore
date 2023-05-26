@@ -1,0 +1,9 @@
+*
+!.gitignore
+!*.v
+!*.vh
+!*.sby
+!*.md
+!*.pdf
+!doc
+!formal
