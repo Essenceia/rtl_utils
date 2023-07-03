@@ -1,3 +1,3 @@
 # RTL utils
 
-Collection of usefull modules, and fun tricks I want to keep around and share.
+Collection of usefull module shared amoung various projects.
