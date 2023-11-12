@@ -159,10 +159,10 @@ $(eval $(foreach x,$(lints),$(call lint_recipe,$x)))
 #############
 
 # The list of testbenches.
-tbs := test
+tbs := fifo
 
 # Dependencies for each testbench
-test_deps += $(TB_DIR)/test_tb.v
+fifo_deps += $(TB_DIR)/fifo_tb.v
 
 # Standard run recipe to build a given testbench
 define build_recipe

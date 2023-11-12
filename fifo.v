@@ -21,18 +21,16 @@ module fifo #(
 	output             empty_o
 );
 /* rd and wr ptrs, need an extra bit for wrap around*/
-localparam PTR_W = $clog2(DATA_W)+1;
+localparam PTR_W = $clog2(ENTRIES_N)+1;
 logic             unused_wr_ptr_add;
 logic             unused_rd_ptr_add;
 logic [PTR_W-1:0] wr_ptr_next;
 logic [PTR_W-1:0] rd_ptr_next;
 reg   [PTR_W-1:0] wr_ptr_q;
 reg   [PTR_W-1:0] rd_ptr_q;
-logic empty;
-logic full;
 
-assign empty = wr_ptr_q == rd_ptr_q;
-assign full = ( wr_ptr_q[PTR_W-1] ^ rd[PTR_W-1] ) & ( wr_ptr_q[PTR_W-2:0] == rd_ptr_q[PTR_W-2:0]);
+assign empty_o = wr_ptr_q == rd_ptr_q;
+assign full_o = ( wr_ptr_q[PTR_W-1] ^ rd_ptr_q[PTR_W-1] ) & ( wr_ptr_q[PTR_W-2:0] == rd_ptr_q[PTR_W-2:0]);
 
 assign { unused_wr_ptr_add,  wr_ptr_next } = wr_ptr_q + {{PTR_W-1{1'b0}},wr_i};
 assign { unused_rd_ptr_add,  rd_ptr_next } = rd_ptr_q + {{PTR_W-1{1'b0}},rd_i};
@@ -52,15 +50,27 @@ logic [DATA_W-1:0] data_next[ENTRIES_N-1:0];
 reg   [DATA_W-1:0] data_q[ENTRIES_N-1:0];
 genvar i;
 generate
-	for(i=0; i< ENTRIES_N; i++) begin : gen_entries 
+	for(i=0; i< ENTRIES_N; i++) begin : gen_wr_entries 
 		assign data_next[i] = wr_data_i;	
 		always @(posedge clk) begin
 			if ( wr_ptr_q == i & wr_i ) begin
 				data_q[i] <= data_next[i];	
 			end
 		end
-		if ( rd_ptr_q == i ) begin
-			rd_data_o = data_q[i];
-		end	
+	end
 endgenerate
+
+
+logic [DATA_W-1:0] rd_data;
+generate
+	for(i=0; i< ENTRIES_N; i++) begin : gen_rd_entries 
+		always_comb begin
+			if ( rd_ptr_q == i ) begin
+				rd_data = data_q[i];
+			end	
+		end
+	end
+endgenerate
+assign rd_data_o = rd_data;
+
 endmodule

@@ -7,3 +7,6 @@
 !*.pdf
 !doc
 !formal
+!makefile
+!tb
+test*
