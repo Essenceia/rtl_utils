@@ -140,8 +140,9 @@ build:
 
 # Dependencies for linter.
 fifo_deps := fifo.v
+gray_deps := bin_to_gray.v gray_to_bin.v
 
-lints := fifo
+lints := fifo gray
 
 # Standard lint recipe
 define lint_recipe
@@ -159,10 +160,11 @@ $(eval $(foreach x,$(lints),$(call lint_recipe,$x)))
 #############
 
 # The list of testbenches.
-tbs := fifo
+tbs := fifo gray
 
 # Dependencies for each testbench
 fifo_deps += $(TB_DIR)/fifo_tb.v
+gray_deps += $(TB_DIR)/gray_tb.v
 
 # Standard run recipe to build a given testbench
 define build_recipe
